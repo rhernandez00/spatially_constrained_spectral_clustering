@@ -11,17 +11,17 @@ This repository contains the full implementation of the spatially constrained sp
 
 The workflow combines:
 
-a feature-based similarity matrix,
+- a feature-based similarity matrix,
 
-a spatial adjacency/contiguity constraint,
+- a spatial adjacency/contiguity constraint,
 
-a joint graph Laplacian embedding, and
+- a joint graph Laplacian embedding, and
 
-k-means clustering in spectral space.
+- k-means clustering in spectral space.
 
 This implementation corresponds to the approach described in the paper and includes scripts for running clustering, preprocessing data, and evaluating cluster quality.
 
-What the Code Does
+What the Code Does:
 1. Data Loading & Preprocessing
 
 Loads feature matrices (e.g., fMRI timeseries, tabular features, etc.).
@@ -36,7 +36,7 @@ Builds a spatial adjacency kernel based on neighbourhoods or distances.
 
 Constructs a spatial contiguity matrix from adjacency information.
 
-Allows tuning of neighbourhood radius / adjacency threshold ([parameter name]).
+Allows tuning of neighbourhood radius / adjacency threshold.
 
 Optional binarisation or weighting strategies.
 
@@ -50,7 +50,7 @@ Computes the first k eigenvectors for the spectral embedding.
 
 4. Clustering
 
-Runs k-means (or [other method if applicable]) on the spectral embedding.
+Runs k-means on the spectral embedding.
 
 Produces spatially contiguous cluster assignments.
 
