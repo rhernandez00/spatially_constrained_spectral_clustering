@@ -1,65 +1,113 @@
-# spatially_constrained_spectral_clustering
-
-Spatially Constrained Spectral Clustering
+# Spatially Constrained Spectral Clustering
 
 Repository for the paper: [Full paper title]
 DOI: [paper.doi]
 
 Overview
 
-This repository contains the full implementation of the spatially constrained spectral clustering algorithm introduced in the accompanying paper. The method extends classical spectral clustering by enforcing spatial contiguity, producing clusters that are both functionally/feature-homogeneous and spatially connected.
+This repository contains the code used to generate the multi-scale functional dog brain atlas described in the accompanying paper. The workflow applies spatially constrained spectral clustering (Craddock et al., 2012) to resting-state fMRI data to create parcellations ranging from 20 to 300 clusters, ensuring both functional homogeneity and spatial contiguity.
 
-The workflow combines:
+The repository is primarily notebook-driven, and each notebook corresponds to one part of the analysis in the manuscript:
 
-- a feature-based similarity matrix,
+atlas generation
 
-- a spatial adjacency/contiguity constraint,
+reproducibility and cross-dataset validation
 
-- a joint graph Laplacian embedding, and
+homogeneity evaluation
 
-- k-means clustering in spectral space.
+figure generation
 
-This implementation corresponds to the approach described in the paper and includes scripts for running clustering, preprocessing data, and evaluating cluster quality.
+# In this code:
 
-What the Code Does:
-1. Data Loading & Preprocessing
+All steps follow exactly the pipeline described in the paper and can be reproduced end-to-end using the notebooks.
 
-Loads feature matrices (e.g., fMRI timeseries, tabular features, etc.).
+1. Preprocessing & Input Handling
 
-Loads spatial coordinates and/or adjacency matrices.
+The notebooks assume that the user provides:
 
-Computes the feature similarity graph (RBF kernel, k-NN graph, etc.).
+a 4D fMRI time-series already preprocessed and registered to a common template
 
-Builds a spatial adjacency kernel based on neighbourhoods or distances.
+a voxel adjacency matrix or 3D grid neighbourhood structure
 
-2. Spatial Constraint Kernel
+optional masks, metadata, or external parcellations for comparison
 
-Constructs a spatial contiguity matrix from adjacency information.
+Preprocessing follows the steps described in the manuscript (motion correction, slice timing, alignment to the template, masking), but is not performed directly in this repository.
 
-Allows tuning of neighbourhood radius / adjacency threshold.
+2. Spatially Constrained Spectral Clustering
 
-Optional binarisation or weighting strategies.
+The clustering implementation follows the algorithm by Craddock et al. (2012):
 
-3. Combined Affinity / Laplacian
+Compute voxel-wise time-series correlations to create a functional similarity graph.
 
-Merges the feature similarity and spatial kernels (e.g., via element-wise multiplication).
+Construct a spatial adjacency matrix enforcing contiguity through a nearest-neighbour or grid-based neighbourhood.
 
-Constructs graph Laplacians (L, normalized Laplacian, etc.).
+Combine functional and spatial constraints using the method described in the paper.
 
-Computes the first k eigenvectors for the spectral embedding.
+Build the graph Laplacian, compute its eigendecomposition, and embed voxels in spectral space.
 
-4. Clustering
+Apply k-means to obtain parcellations at resolutions from N = 20 to N = 300.
 
-Runs k-means on the spectral embedding.
+This entire process is implemented directly inside calculate_segmentation.ipynb, which reproduces the atlas used in the manuscript.
 
-Produces spatially contiguous cluster assignments.
+3. Evaluation Metrics
 
-Includes optional post-processing to ensure connectivity.
+Two notebooks reproduce the manuscript’s results:
 
-5. Evaluation
+Reproducibility & Cross-Dataset Replication
 
-Computes homogeneity / within-cluster similarity.
+Figures_Reproducibility.ipynb computes:
 
-Computes contiguity measures.
+Dice coefficient
 
-Outputs cluster label maps, logs, and parameter summaries.
+Adjusted Rand Index (ARI)
+
+cross-dataset reproducibility using the external dataset
+
+within-participant reproducibility using the coil-comparison dataset
+
+The notebook replicates Figures 1B–1E from the paper.
+
+Functional Homogeneity
+
+Figures_Homogeneity.ipynb computes:
+
+parcel-wise homogeneity
+
+average homogeneity across resolutions
+
+homogeneity maps for visualization
+
+These analyses correspond to Figure 2 of the paper.
+
+4. Anatomical Concordance (Optional)
+
+If atlas files are included, a comparison with the Johnson et al. anatomical atlas can be reproduced.
+Otherwise, users may insert their own reference atlas.
+
+5. Figure Generation
+
+All figure panels in the manuscript are reproduced directly in the notebooks, using:
+
+Nilearn
+
+Matplotlib
+
+Nibabel
+
+Scikit-learn
+
+Every figure in the paper has a corresponding code cell inside the notebooks.
+
+Citation
+
+If you use this repository or atlas, please cite the manuscript:
+
+[Full citation here]
+DOI: [paper.doi]
+
+📂 Data Availability
+
+The atlas and data used in the paper are available at:
+
+Zenodo: []
+External dataset: Beckmann et al., 2021 (OpenNeuro ds003830)
